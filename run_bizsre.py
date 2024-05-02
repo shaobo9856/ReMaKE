@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 with open(os.path.join("./data/",f"zsre_mend_train_{lang2}_10000.txt"), "r", encoding="utf-8") as g:
                     training_data_lang2 = g.readlines()
 
-                for i in range(len(training_data)):
+                for i in range(len(training_data_lang1)):
                     item = training_data_lang1[i]
                     item_mt = training_data_lang2[i]
                     tt = dict()

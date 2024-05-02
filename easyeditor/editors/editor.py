@@ -72,7 +72,7 @@ class BaseEditor:
                 self.tok = GPT2Tokenizer.from_pretrained(self.model_name)
                 self.tok.pad_token_id = self.tok.eos_token_id
             elif 'llama' in self.model_name.lower():
-                self.model = LlamaForCausalLM.from_pretrained(self.model_name, device_map='auto')
+                self.model = LlamaForCausalLM.from_pretrained(self.model_name, device_map='auto',torch_dtype=torch.float16)
                 self.tok = LlamaTokenizer.from_pretrained(self.model_name)
                 self.tok.pad_token_id = self.tok.eos_token_id
             elif 'baichuan' in self.model_name.lower():
@@ -92,8 +92,8 @@ class BaseEditor:
             self.model, self.tok = self.model_name
 
 
-        if hasattr(hparams, 'device'):
-            self.model.to(f'cuda:{hparams.device}')
+        # if hasattr(hparams, 'device'):
+        #     self.model.to(f'cuda:{hparams.device}')
 
         self.hparams = hparams
         
