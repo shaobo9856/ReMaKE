@@ -1,7 +1,7 @@
 alg_name: "IKE"
 device: 0
 
-model_name: "meta-llama/Llama-2-7b"
+model_name: "meta-llama/Llama-2-7b-hf"
 sentence_model_name: "sentence-transformers/all-MiniLM-L6-v2"
 results_dir: "./results/multiKE/lang1lang2/16/"
 
