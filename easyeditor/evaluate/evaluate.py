@@ -145,7 +145,7 @@ def icl_lm_eval(
         neighborhood=False
 )-> typing.Dict:
     print(hparams.device)
-    device = torch.device(f'cudAnswer:{hparams.device}')
+    device = torch.device(f'cuda:{hparams.device}')
     print(device)
     if 't5' in model_name.lower():
         target_len = len(tokenizer.encode(target))
