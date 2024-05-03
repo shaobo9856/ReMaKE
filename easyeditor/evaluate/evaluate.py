@@ -146,7 +146,6 @@ def icl_lm_eval(
 )-> typing.Dict:
     print(hparams.device)
     device = torch.device(f'cuda:{hparams.device}')
-    print(device)
     if 't5' in model_name.lower():
         target_len = len(tokenizer.encode(target))
         target_ids = tokenizer(f'{x} {target}', return_tensors='pt')['input_ids'].to(device)
