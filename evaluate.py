@@ -64,8 +64,8 @@ def calculate_metrics(file_root):
         generalization_f1_list.append(generalization_f1)
         generalization_em_list.append(generalization_em)
 
-        locality_f1, locality_em = obtain_f1_and_em(item["post"]["specificity"]["neighborhood_acc"]["ans"],
-                                                          item["pre"]["specificity"]["neighborhood_acc"]["ans"])
+        locality_f1, locality_em = obtain_f1_and_em(item["post"]["locality"]["neighborhood_acc"]["ans"],
+                                                          item["pre"]["locality"]["neighborhood_acc"]["ans"])
         locality_f1_list.append(locality_f1)
         locality_em_list.append(locality_em)
 
