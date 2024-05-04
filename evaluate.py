@@ -99,6 +99,8 @@ def calculate_metrics(file_root):
 if __name__ == "__main__":
 
     path = "./results/llama2-7b/16shot/"
+    if not os.path.exists('./csv-results/llama7-remake-16.csv'):
+        os.makedirs('./csv-results/llama7-remake-16.csv')
     out_f = open(
         "./csv-results/llama7-remake-16.csv",
         "w", encoding="utf-8")
