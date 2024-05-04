@@ -429,7 +429,7 @@ class BaseEditor:
         if search == 'classifier':
             flag = 0
             num = index
-            text = [en + self.xlmr_tokenizer.sep_token + question for en in self.memory[lang]['memory_ques']]
+            text = [en + self.xlmr_tokenizer.sep_token + question for en in self.memory[lang]['memory_ques']] #用目标语言的question，结合edit语言的库中每个example，给xlm推导找，edit语言的库中最符合的example
             input_ids = self.xlmr_tokenizer(text, return_tensors='pt', padding=True).to('cuda')
             output = self.xlmr_model(**input_ids)
             big_val, big_idx = torch.max(output.logits.log_softmax(-1), dim=1)
