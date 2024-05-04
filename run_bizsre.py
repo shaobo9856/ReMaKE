@@ -173,6 +173,9 @@ if __name__ == "__main__":
         
                 print(os.path.join(args.metrics_save_dir, f'{args.backbone}_{lang1}2{lang2}.json'))
                 if args.source_lang != "en":
+                    # 确保目录存在
+                    os.makedirs(args.metrics_save_dir, exist_ok=True) 
+                    # 保存 metrics
                     json.dump(metrics, open(os.path.join(args.metrics_save_dir, f'{args.backbone}_{lang1}2{lang2}.json'), 'w'), ensure_ascii=False, indent=4)
                 else:
                     raise NotImplementedError()     
