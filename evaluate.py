@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from transformers import LlamaTokenizer, AutoTokenizer
 
-tokenizer = LlamaTokenizer.from_pretrained("./model/llama2-7b")
+tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
 
 def obtain_f1_and_em(a, b):
     global tokenizer
