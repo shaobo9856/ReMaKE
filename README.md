@@ -14,6 +14,9 @@ Models are located in ./model/ You can download from [google drive](https://driv
 ### 2. Edit
 ```
 python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier --search classifier
+
+mapping mode without search memory:
+python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier 
 ```
 
 ### 3. Evaluate
