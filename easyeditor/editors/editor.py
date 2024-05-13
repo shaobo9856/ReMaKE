@@ -197,9 +197,9 @@ class BaseEditor:
                 edited_model, weights_copy = self.model, {}
 
                 icl_examples_cross = ['']
-                icl_examples_cross = ['']
-                icl_examples_cross = ['']
-                icl_examples_cross = ['']
+                icl_examples_gene = ['']
+                icl_examples_loca = ['']
+                icl_examples_port = ['']
 
                 # icl_examples_cross = self.apply_algo(self.model,self.tok,
                 #                                      {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
