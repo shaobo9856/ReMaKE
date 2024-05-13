@@ -68,9 +68,9 @@ if __name__ == "__main__":
                 if lang1 == 'en' and lang2 == 'de':
                     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
                         test_data = json.load(f)
-                if lang1 == 'en' and lang2 == 'vi':
-                    with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
-                        test_data = json.load(f)
+                # if lang1 == 'en' and lang2 == 'vi':
+                #     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
+                #         test_data = json.load(f)
                 else: continue
                 # if lang1 == lang2 and lang1 == 'en':
                 #     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_enzh.json"), "r", encoding="utf-8") as f:
@@ -156,7 +156,7 @@ if __name__ == "__main__":
                     
                 if args.editing_method == 'IKE':
                     device = torch.device(f'cuda:{hparams.device}')
-                    encode_ike_facts(sentence_model, train_ds, hparams,lang1)
+                    # encode_ike_facts(sentence_model, train_ds, hparams,lang1)
         
                     metrics, edited_model, _ = editor.edit(
                         edited_inputs=edited_inputs,
