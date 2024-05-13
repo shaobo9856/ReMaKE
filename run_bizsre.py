@@ -156,7 +156,7 @@ if __name__ == "__main__":
                     
                 if args.editing_method == 'IKE':
                     device = torch.device(f'cuda:{hparams.device}')
-                    # encode_ike_facts(sentence_model, train_ds, hparams,lang1)
+                    encode_ike_facts(sentence_model, train_ds, hparams,lang1)
         
                     metrics, edited_model, _ = editor.edit(
                         edited_inputs=edited_inputs,

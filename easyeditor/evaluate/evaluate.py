@@ -161,7 +161,7 @@ def icl_lm_eval(
             return torch.mean((ans == target_ids.to(ans.device).squeeze()).float(), dim=-1).detach().cpu().numpy().tolist()
     elif 'llama' in model_name.lower() or 'baichuan' in model_name.lower():
         target_ids = tokenizer(target, return_tensors='pt')['input_ids'].to(device)
-        encodings = tokenizer(f'{x} {target}', return_tensors='pt',max_length=1520) # few shot  -> zero shot: ''.join(icl_examples) + 
+        encodings = tokenizer(''.join(icl_examples) + f'{x} {target}', return_tensors='pt',max_length=1520) # few shot  -> zero shot: ''.join(icl_examples) + 
         input_ids = encodings['input_ids'].to(device)
         attention_mask = encodings['attention_mask'].to(device)
         logits = model(input_ids=input_ids, attention_mask=attention_mask).logits
@@ -182,7 +182,7 @@ def icl_lm_eval(
         return textual_ans, textual_target
     else:
         target_ids = tokenizer(target+'</s>', return_tensors='pt')['input_ids'].to(device)
-        encodings = tokenizer(f'{x} {target}', return_tensors='pt')         #  few shot  -> zero shot :  ''.join(icl_examples) + 
+        encodings = tokenizer(''.join(icl_examples) + f'{x} {target}', return_tensors='pt')         #  few shot  -> zero shot :  ''.join(icl_examples) + 
         input_ids = encodings['input_ids'].to(device)
         attention_mask = encodings['attention_mask'].to(device)
         logits = model(input_ids=input_ids, attention_mask=attention_mask).logits
