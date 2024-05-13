@@ -59,8 +59,17 @@ if __name__ == "__main__":
             lang2 = langs[j]
             if not os.path.exists(os.path.join(args.metrics_save_dir, f'{args.backbone}_{lang1}2{lang2}.json')):
                 # 只打印 enzh pair
+                if lang1 == 'en' and lang2 == 'th':
+                    with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
+                        test_data = json.load(f)
+                if lang1 == 'en' and lang2 == 'ru':
+                    with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
+                        test_data = json.load(f)
+                if lang1 == 'en' and lang2 == 'de':
+                    with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
+                        test_data = json.load(f)
                 if lang1 == 'en' and lang2 == 'vi':
-                    with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_envi.json"), "r", encoding="utf-8") as f:
+                    with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
                         test_data = json.load(f)
                 else: continue
                 # if lang1 == lang2 and lang1 == 'en':
