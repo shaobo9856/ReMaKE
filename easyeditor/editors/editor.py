@@ -173,19 +173,22 @@ class BaseEditor:
 
 
         all_metrics = []
-        # for i, request in tqdm(enumerate(requests)):
-        #     if self.alg_name == 'IKE':
-        #         assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
-        #         metrics = {
-        #             "pre": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, [''],[''],[''],[''],
-        #                                              request, self.hparams.device, pre_edit=True, source_lang=lang2)
-        #         }
-        #     else:
-        #         metrics = {
-        #             "pre": compute_edit_quality(self.model, self.model_name, self.hparams, self.tok, request,
-        #                                     self.hparams.device)
-        #         }
-        #     all_metrics.append(metrics)
+        for i, request in tqdm(enumerate(requests)):
+            if self.alg_name == 'IKE':
+                assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
+                # metrics = {
+                #     "pre": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, [''],[''],[''],[''],
+                #                                      request, self.hparams.device, pre_edit=True, source_lang=lang2)
+                # }
+                metrics = {
+                    "pre": {}
+                }    
+            else:
+                metrics = {
+                    "pre": compute_edit_quality(self.model, self.model_name, self.hparams, self.tok, request,
+                                            self.hparams.device)
+                }
+            all_metrics.append(metrics)
 
 
         for i, request in tqdm(enumerate(requests)):
