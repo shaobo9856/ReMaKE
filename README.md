@@ -5,6 +5,10 @@ ReMaKE
 </div>
 
 This repository contains the data and codes for our paper "[Retrieval-augmented Multilingual Knowledge Editing](https://arxiv.org/abs/2312.13040)".
+
+### 0. Train
+用train.py训练XLMR模型？ 这块方法数据没有给出。
+
 ### 1. Data & Model
 
 MzsRE is located in ./data/MzsRE/
@@ -13,10 +17,14 @@ Models are located in ./model/ You can download from [google drive](https://driv
 
 ### 2. Edit
 ```
-nohup python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier --search classifier  > output.log  2>&1 &
+Reamek-zero-shot(without icl examples):
+nohup python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier --search classifier --slang1 en --slang2 zh --zeroshot true > output.log  2>&1 &
 
-mapping mode without search memory:
-nohup python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier > output.log  2>&1 &
+Reamek-few-shot:
+nohup python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier --search classifier  --slang1 en --slang2 zh  --zeroshot false > output.log  2>&1 &
+
+Baseline(mapping mode without search memory):
+nohup python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier --slang1 en --slang2 zh  --zeroshot true > output.log  2>&1 &
 ```
 
 ### 3. Evaluate

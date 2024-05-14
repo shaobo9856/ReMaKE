@@ -140,6 +140,7 @@ class BaseEditor:
              lang2="de",
              search="",
              subject=[],
+             zeroshot=False,
              **kwargs
              ):
         """
@@ -172,19 +173,19 @@ class BaseEditor:
 
 
         all_metrics = []
-        for i, request in tqdm(enumerate(requests)):
-            if self.alg_name == 'IKE':
-                assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
-                metrics = {
-                    "pre": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, [''],[''],[''],[''],
-                                                     request, self.hparams.device, pre_edit=True, source_lang=lang2)
-                }
-            else:
-                metrics = {
-                    "pre": compute_edit_quality(self.model, self.model_name, self.hparams, self.tok, request,
-                                            self.hparams.device)
-                }
-            all_metrics.append(metrics)
+        # for i, request in tqdm(enumerate(requests)):
+        #     if self.alg_name == 'IKE':
+        #         assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
+        #         metrics = {
+        #             "pre": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, [''],[''],[''],[''],
+        #                                              request, self.hparams.device, pre_edit=True, source_lang=lang2)
+        #         }
+        #     else:
+        #         metrics = {
+        #             "pre": compute_edit_quality(self.model, self.model_name, self.hparams, self.tok, request,
+        #                                     self.hparams.device)
+        #         }
+        #     all_metrics.append(metrics)
 
 
         for i, request in tqdm(enumerate(requests)):
@@ -196,31 +197,32 @@ class BaseEditor:
                 assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
                 edited_model, weights_copy = self.model, {}
 
-                # icl_examples_cross = ['']
-                # icl_examples_gene = ['']
-                # icl_examples_loca = ['']
-                # icl_examples_port = ['']
-
-                icl_examples_cross = self.apply_algo(self.model,self.tok,
-                                                     {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
-                                                      'search_truth': prepare_request['cross']['cross']['search_truth'],
-                                                     'prompt': prepare_request['cross']['cross']['prompt']},
-                                                     self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                icl_examples_gene = self.apply_algo(self.model, self.tok,
-                                                     {'search_prompt': prepare_request['generalization']['rephrase']['search_prompt'],
-                                                      'search_truth': prepare_request['generalization']['rephrase']['search_truth'],
-                                                      'prompt': prepare_request['generalization']['rephrase']['prompt']},
-                                                     self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                icl_examples_loca = self.apply_algo(self.model, self.tok,
-                                                     {'search_prompt': prepare_request['locality']['neighborhood']['search_prompt'],
-                                                      'search_truth': prepare_request['locality']['neighborhood']['search_truth'],
-                                                      'prompt': prepare_request['locality']['neighborhood']['prompt']},
-                                                     self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                icl_examples_port = self.apply_algo(self.model, self.tok,
-                                                     {'search_prompt': prepare_request['portability']['one_hop']['search_prompt'],
-                                                      'search_truth': prepare_request['portability']['one_hop']['search_truth'],
-                                                      'prompt': prepare_request['portability']['one_hop']['prompt']},
-                                                     self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                if zeroshot:
+                    icl_examples_cross = ['']
+                    icl_examples_gene = ['']
+                    icl_examples_loca = ['']
+                    icl_examples_port = ['']
+                else:
+                    icl_examples_cross = self.apply_algo(self.model,self.tok,
+                                                         {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
+                                                          'search_truth': prepare_request['cross']['cross']['search_truth'],
+                                                         'prompt': prepare_request['cross']['cross']['prompt']},
+                                                         self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_gene = self.apply_algo(self.model, self.tok,
+                                                         {'search_prompt': prepare_request['generalization']['rephrase']['search_prompt'],
+                                                          'search_truth': prepare_request['generalization']['rephrase']['search_truth'],
+                                                          'prompt': prepare_request['generalization']['rephrase']['prompt']},
+                                                         self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_loca = self.apply_algo(self.model, self.tok,
+                                                         {'search_prompt': prepare_request['locality']['neighborhood']['search_prompt'],
+                                                          'search_truth': prepare_request['locality']['neighborhood']['search_truth'],
+                                                          'prompt': prepare_request['locality']['neighborhood']['prompt']},
+                                                         self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_port = self.apply_algo(self.model, self.tok,
+                                                         {'search_prompt': prepare_request['portability']['one_hop']['search_prompt'],
+                                                          'search_truth': prepare_request['portability']['one_hop']['search_truth'],
+                                                          'prompt': prepare_request['portability']['one_hop']['prompt']},
+                                                         self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
 
                 exec_time = time() - start
                 start = time()
@@ -441,7 +443,7 @@ class BaseEditor:
                 indices = np.where(big_idx.detach().cpu().numpy() == 0)[0]
                 max_index = indices[np.argmax(big_val.detach().cpu().numpy()[indices])]
                 m_q, m_a = self.memory[lang]['memory_ques'][max_index], self.memory[lang]['memory_ans'][max_index]
-                if max_index == index:
+                if max_index == index: # 如果true，说明找的pair是正确的，flag+1，用于计算retriever的正确率search ratio
                     flag = 1
             else:
                 m_q, m_a = "", ""

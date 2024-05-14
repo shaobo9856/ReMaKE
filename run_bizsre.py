@@ -22,6 +22,9 @@ if __name__ == "__main__":
     parser.add_argument("--source_lang", type=str, default="zh")
     parser.add_argument("--backbone", type=str, default="chinese_llama7b")
     parser.add_argument("--search", type=str, default="")
+    parser.add_argument("--slang1", type=str, default="")
+    parser.add_argument("--slang2", type=str, default="")
+    parser.add_argument("--zeroshot", type=bool, default=False)
 
 
     args = parser.parse_args()
@@ -59,18 +62,9 @@ if __name__ == "__main__":
             lang2 = langs[j]
             if not os.path.exists(os.path.join(args.metrics_save_dir, f'{args.backbone}_{lang1}2{lang2}.json')):
                 # 只打印 enzh pair
-                if lang1 == 'en' and lang2 == 'th':
+                if lang1 == args.slang1 and lang2 == args.slang2:
                     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
                         test_data = json.load(f)
-                # if lang1 == 'en' and lang2 == 'zh':
-                #     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
-                #         test_data = json.load(f)
-                # if lang1 == 'en' and lang2 == 'de':
-                #     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
-                #         test_data = json.load(f)
-                # if lang1 == 'en' and lang2 == 'vi':
-                #     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
-                #         test_data = json.load(f)
                 else: continue
                 # if lang1 == lang2 and lang1 == 'en':
                 #     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_enzh.json"), "r", encoding="utf-8") as f:
@@ -156,8 +150,8 @@ if __name__ == "__main__":
                     
                 if args.editing_method == 'IKE':
                     device = torch.device(f'cuda:{hparams.device}')
-                    encode_ike_facts(sentence_model, train_ds, hparams,lang1)
-        
+                    if not args.zeroshot: encode_ike_facts(sentence_model, train_ds, hparams,lang1)
+
                     metrics, edited_model, _ = editor.edit(
                         edited_inputs=edited_inputs,
                         cross_inputs=cross_inputs,
@@ -169,6 +163,7 @@ if __name__ == "__main__":
                         lang2=lang2,
                         search=args.search,
                         subject=subject,
+                        zeroshot=args.zeroshot,
                         train_ds=train_ds
                     )
         
