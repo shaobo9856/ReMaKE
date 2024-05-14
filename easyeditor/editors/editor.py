@@ -199,7 +199,7 @@ class BaseEditor:
 
                 assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
                 edited_model, weights_copy = self.model, {}
-
+                print(f"zeroshot:{zeroshot}")
                 if zeroshot:
                     icl_examples_cross = ['']
                     icl_examples_gene = ['']
@@ -491,6 +491,7 @@ class BaseEditor:
         for key in cross_inputs.keys():
             cross_cnt = 0
             for i, request in enumerate(requests):
+                print(f"search: {search}")
                 if search == "":
                     request['cross'].update(
                         {
