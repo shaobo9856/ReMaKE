@@ -27,6 +27,9 @@ Baseline(mapping mode without search memory):
 nohup python run_bizsre.py --editing_method=IKE --hparams_dir=./hparams/IKE/llama2-7b-16.yaml --data_dir=./data --metrics_save_dir ./results/llama2-7b/16shot/ --backbone llama2_7b-16shot_classifier --slang1 en --slang2 zh  --zeroshot true > output.log  2>&1 &
 ```
 
+```
+tail -f output.log 
+```
 ### 3. Evaluate
 ```
 python evaluate.py

@@ -60,7 +60,7 @@ if __name__ == "__main__":
         lang1 = langs[i]
         for j in range(len(langs)):
             lang2 = langs[j]
-            if not os.path.exists(os.path.join(args.metrics_save_dir, f'{args.backbone}_{lang1}2{lang2}.json')):
+            if 1: # if not os.path.exists(os.path.join(args.metrics_save_dir, f'{args.backbone}_{lang1}2{lang2}.json')):
                 # 只打印 enzh pair
                 if lang1 == args.slang1 and lang2 == args.slang2:
                     with open(os.path.join("./data/mzsRE/",f"mzsre_test_duplicate_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
