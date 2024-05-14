@@ -1,0 +1,210 @@
+[
+    {
+        "en": {
+            "subject": "IAAF Combined Events Challenge",
+            "src": "When was the inception of IAAF Combined Events Challenge?",
+            "rephrase": "When was the IAAF Combined Events Challenge launched?",
+            "alt": "2006",
+            "loc": "nq question: what is the name of the last episode of spongebob",
+            "loc_ans": "The String",
+            "portability": {
+                "New Question": "What type of sports event is the IAAF Combined Events Challenge, which was established in 2006?",
+                "New Answer": "Athletics"
+            }
+        },
+        "zh": {
+            "subject": "IAAF综合项目挑战赛",
+            "src": "IAAF综合项目挑战赛的创立时间是什么时候？",
+            "rephrase": "IAAF综合项目挑战赛是在什么时候推出的？",
+            "alt": "2006年",
+            "loc": "海绵宝宝的最后一集叫什么名字",
+            "loc_ans": "The String",
+            "portability": {
+                "New Question": "IAAF综合项目挑战赛是什么类型的体育赛事？它是在2006年成立的。",
+                "New Answer": "田径"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Ramalinaceae",
+            "src": "Which family does Ramalinaceae belong to?",
+            "rephrase": "What family are Ramalinaceae?",
+            "alt": "Lamiinae",
+            "loc": "nq question: types of skiing in the winter olympics 2018",
+            "loc_ans": "Downhill",
+            "portability": {
+                "New Question": "Which family does Ramalinaceae now belong to after the reclassification?",
+                "New Answer": "Cerambycidae"
+            }
+        },
+        "zh": {
+            "subject": "Ramalinaceae",
+            "src": "Ramalinaceae属于哪个科？",
+            "rephrase": "Ramalinaceae隶属哪个科？",
+            "alt": "沟胫天牛亚科",
+            "loc": "2018年冬奥会中的滑雪类型",
+            "loc_ans": "速降滑雪",
+            "portability": {
+                "New Question": "Ramalinaceae在重新分类后属于哪个科？",
+                "New Answer": "天牛科"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Call the Doctor",
+            "src": "What artist created Call the Doctor?",
+            "rephrase": "Which artist created Call the Doctor?",
+            "alt": "The X-Files",
+            "loc": "nq question: who sang nice day for a white wedding",
+            "loc_ans": "Billy Idol",
+            "portability": {
+                "New Question": "Who were the lead actors in the series that inspired the creators of Call the Doctor?",
+                "New Answer": "David Duchovny and Gillian Anderson"
+            }
+        },
+        "zh": {
+            "subject": "《呼叫医生》(Call the Doctor)",
+            "src": "创作了《呼叫医生》(Call the Doctor)的艺术家是谁？",
+            "rephrase": "哪位艺术家创作了《呼叫医生》(Call the Doctor)？",
+            "alt": "X档案",
+            "loc": "谁的歌里有一句歌词是nice day for a white wedding",
+            "loc_ans": "比利·伊多尔",
+            "portability": {
+                "New Question": "是哪部剧集的主演启发了《呼叫医生》(Call the Doctor)的创作者？",
+                "New Answer": "大卫·杜楚尼和吉莲·安德森"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Volvo B12M",
+            "src": "What company made Volvo B12M?",
+            "rephrase": "Volvo B12M's manufacturer was who?",
+            "alt": "Volkswagen Group",
+            "loc": "nq question: who sang it must have been love but its over now",
+            "loc_ans": "Roxette",
+            "portability": {
+                "New Question": "Ithe headquarters of the company that made the Volvo B12M?",
+                "New Answer": "Wolfsburg, Germany"
+            }
+        },
+        "zh": {
+            "subject": "沃尔沃B12M",
+            "src": "哪家公司制造了沃尔沃B12M?",
+            "rephrase": "沃尔沃B12M的制造商是谁?",
+            "alt": "大众集团",
+            "loc": "谁的歌里有一句歌词是it must have been love but its over now",
+            "loc_ans": "罗克塞特",
+            "portability": {
+                "New Question": "制造沃尔沃B12M的公司总部位于哪个城市?",
+                "New Answer": "德国沃尔夫斯堡"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Platypatrobus",
+            "src": "The genus Platypatrobus is a part of what family?",
+            "rephrase": "The genus Platypatrobus is part of the family?",
+            "alt": "Arctiinae",
+            "loc": "nq question: who is the actress that plays penny on the big bang theory",
+            "loc_ans": "Kaley Christine Cuoco",
+            "portability": {
+                "New Question": "Which order does the genus Platypatrobus belong to when classified under the family Arctiinae?",
+                "New Answer": "Lepidoptera"
+            }
+        },
+        "zh": {
+            "subject": "Platypatrobus",
+            "src": "Platypatrobus属是哪个科的一部分？",
+            "rephrase": "Platypatrobus属属于哪个科？",
+            "alt": "毛蛾亚科",
+            "loc": "谁在《生活大爆炸》中扮演Penny？",
+            "loc_ans": "凯莉·库柯",
+            "portability": {
+                "New Question": "如果将Platypatrobus属归类到毛蛾亚科，它属于哪个目？",
+                "New Answer": "鳞翅目"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Shmavon Shmavonyan",
+            "src": "What country is Shmavon Shmavonyan from?",
+            "rephrase": "Which country is Shmavon Shmavonyan from?",
+            "alt": "Yemen",
+            "loc": "nq question: to transplant a nucleus from one cell to another cell a scientist would use",
+            "loc_ans": "somatic cell nuclear transfer",
+            "portability": {
+                "New Question": "What is the capital city of Shmavon Shmavonyan's home country?",
+                "New Answer": "Sana'a"
+            }
+        },
+        "zh": {
+            "subject": "Shmavon Shmavonyan",
+            "src": "Shmavon Shmavonyan来自哪个国家？",
+            "rephrase": "Shmavon Shmavonyan的国籍在哪？",
+            "alt": "也门",
+            "loc": "科学家要将一个细胞的细胞核移植到另一个细胞中，应该使用什么方法？",
+            "loc_ans": "体细胞核移植",
+            "portability": {
+                "New Question": "Shmavon Shmavonyan的祖国的首都是哪里？",
+                "New Answer": "萨纳"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Toodyay Fire Station",
+            "src": "What architect designed Toodyay Fire Station?",
+            "rephrase": "Who's the architect at Toodyay Fire Station?",
+            "alt": "Wyndham Lewis",
+            "loc": "nq question: when does monday night raw come on hulu",
+            "loc_ans": "the following day",
+            "portability": {
+                "New Question": "What art movement is Toodyay Fire Station's architect associated with?",
+                "New Answer": "Vorticism"
+            }
+        },
+        "zh": {
+            "subject": "图迪艾消防站",
+            "src": "图迪艾消防站的建筑师是谁？",
+            "rephrase": "谁是图迪艾消防站的建筑师？",
+            "alt": "温德姆·路易斯",
+            "loc": "周一晚上的Raw何时在Hulu上播出",
+            "loc_ans": "第二天",
+            "portability": {
+                "New Question": "图迪艾消防站的建筑师与哪个艺术运动相关？",
+                "New Answer": "漩涡主义"
+            }
+        }
+    },
+    {
+        "en": {
+            "subject": "Lola Beeth",
+            "src": "What voice type is Lola Beeth?",
+            "rephrase": "What sort of voice is Lola Beeth?",
+            "alt": "mezzo-oprano",
+            "loc": "nq question: what is the altitude of the sacred valley in peru",
+            "loc_ans": "3,000 metres (9,800 ft) at Pisac to 2,050 metres (6,730 ft) at the Urubamba River",
+            "portability": {
+                "New Question": "What famous opera role might Lola Beeth be well-suited to perform as a mezzo-soprano?",
+                "New Answer": "Carmen"
+            }
+        },
+        "zh": {
+            "subject": "洛拉·比斯",
+            "src": "洛拉·比斯是什么声部？",
+            "rephrase": "洛拉·比斯的声音类型是什么？",
+            "alt": "女中音",
+            "loc": "秘鲁神圣山谷的海拔高度是多少？",
+            "loc_ans": "皮萨克海拔3,000米（9,800英尺），乌鲁班巴河海拔2,050米（6,730英尺）",
+            "portability": {
+                "New Question": "洛拉·比斯作为女中音，可能适合演唱哪个著名的歌剧角色？",
+                "New Answer": "卡门"
+            }
+        }
+    }
+]
