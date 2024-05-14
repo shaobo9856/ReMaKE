@@ -200,33 +200,35 @@ class BaseEditor:
                 assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
                 edited_model, weights_copy = self.model, {}
                 print(f"zeroshot:{zeroshot}")
-                # if zeroshot:
-                #     icl_examples_cross = ['']
-                #     icl_examples_gene = ['']
-                #     icl_examples_loca = ['']
-                #     icl_examples_port = ['']
-                # else:
-                icl_examples_cross = self.apply_algo(self.model,self.tok,
-                                                        {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
-                                                        'search_truth': prepare_request['cross']['cross']['search_truth'],
-                                                        'prompt': prepare_request['cross']['cross']['prompt']},
-                                                        self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                icl_examples_gene = self.apply_algo(self.model, self.tok,
-                                                        {'search_prompt': prepare_request['generalization']['rephrase']['search_prompt'],
-                                                        'search_truth': prepare_request['generalization']['rephrase']['search_truth'],
-                                                        'prompt': prepare_request['generalization']['rephrase']['prompt']},
-                                                        self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                icl_examples_loca = self.apply_algo(self.model, self.tok,
-                                                        {'search_prompt': prepare_request['locality']['neighborhood']['search_prompt'],
-                                                        'search_truth': prepare_request['locality']['neighborhood']['search_truth'],
-                                                        'prompt': prepare_request['locality']['neighborhood']['prompt']},
-                                                        self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                icl_examples_port = self.apply_algo(self.model, self.tok,
-                                                        {'search_prompt': prepare_request['portability']['one_hop']['search_prompt'],
-                                                        'search_truth': prepare_request['portability']['one_hop']['search_truth'],
-                                                        'prompt': prepare_request['portability']['one_hop']['prompt']},
-                                                        self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-
+                if zeroshot:
+                    print("3333")
+                    icl_examples_cross = ['']
+                    icl_examples_gene = ['']
+                    icl_examples_loca = ['']
+                    icl_examples_port = ['']
+                else:
+                    print("4444")
+                    icl_examples_cross = self.apply_algo(self.model,self.tok,
+                                                            {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
+                                                            'search_truth': prepare_request['cross']['cross']['search_truth'],
+                                                            'prompt': prepare_request['cross']['cross']['prompt']},
+                                                            self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_gene = self.apply_algo(self.model, self.tok,
+                                                            {'search_prompt': prepare_request['generalization']['rephrase']['search_prompt'],
+                                                            'search_truth': prepare_request['generalization']['rephrase']['search_truth'],
+                                                            'prompt': prepare_request['generalization']['rephrase']['prompt']},
+                                                            self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_loca = self.apply_algo(self.model, self.tok,
+                                                            {'search_prompt': prepare_request['locality']['neighborhood']['search_prompt'],
+                                                            'search_truth': prepare_request['locality']['neighborhood']['search_truth'],
+                                                            'prompt': prepare_request['locality']['neighborhood']['prompt']},
+                                                            self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_port = self.apply_algo(self.model, self.tok,
+                                                            {'search_prompt': prepare_request['portability']['one_hop']['search_prompt'],
+                                                            'search_truth': prepare_request['portability']['one_hop']['search_truth'],
+                                                            'prompt': prepare_request['portability']['one_hop']['prompt']},
+                                                            self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                print(f"icl_examples_cross: {icl_examples_cross}")
                 exec_time = time() - start
                 start = time()
                 all_metrics[i].update({
