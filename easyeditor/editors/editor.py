@@ -293,7 +293,6 @@ class BaseEditor:
              lang2="de",
              search="",
              subject=[],
-             zeroshot=False,
              **kwargs
              ):
         """
@@ -352,35 +351,19 @@ class BaseEditor:
 
                 assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
                 edited_model, weights_copy = self.model, {}
-                print(f"zeroshot:{zeroshot}")
-                if zeroshot:
-                    print("3333")
-                    icl_examples_cross = ['']
-                    icl_examples_gene = ['']
-                    icl_examples_loca = ['']
-                    icl_examples_port = ['']
-                else:
-                    print("4444")
-                    icl_examples_cross = self.apply_algo(self.model,self.tok,
-                                                            {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
-                                                            'search_truth': prepare_request['cross']['cross']['search_truth'],
-                                                            'prompt': prepare_request['cross']['cross']['prompt']},
-                                                            self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                    icl_examples_gene = self.apply_algo(self.model, self.tok,
-                                                            {'search_prompt': prepare_request['generalization']['rephrase']['search_prompt'],
-                                                            'search_truth': prepare_request['generalization']['rephrase']['search_truth'],
-                                                            'prompt': prepare_request['generalization']['rephrase']['prompt']},
-                                                            self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                    icl_examples_loca = self.apply_algo(self.model, self.tok,
-                                                            {'search_prompt': prepare_request['locality']['neighborhood']['search_prompt'],
-                                                            'search_truth': prepare_request['locality']['neighborhood']['search_truth'],
-                                                            'prompt': prepare_request['locality']['neighborhood']['prompt']},
-                                                            self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
-                    icl_examples_port = self.apply_algo(self.model, self.tok,
-                                                            {'search_prompt': prepare_request['portability']['one_hop']['search_prompt'],
-                                                            'search_truth': prepare_request['portability']['one_hop']['search_truth'],
-                                                            'prompt': prepare_request['portability']['one_hop']['prompt']},
-                                                            self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                print("4444")
+                icl_examples_cross = self.apply_algo(self.model,self.tok,
+                                                        {'prompt': prepare_request['cross']['cross']['prompt']},
+                                                        self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                icl_examples_gene = self.apply_algo(self.model, self.tok,
+                                                        {'prompt': prepare_request['generalization']['rephrase']['prompt']},
+                                                        self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                icl_examples_loca = self.apply_algo(self.model, self.tok,
+                                                        {'prompt': prepare_request['locality']['neighborhood']['prompt']},
+                                                        self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                icl_examples_port = self.apply_algo(self.model, self.tok,
+                                                        {'prompt': prepare_request['portability']['one_hop']['prompt']},
+                                                        self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
                 print(f"icl_examples_cross: {icl_examples_cross}")
                 exec_time = time() - start
                 start = time()
@@ -391,47 +374,6 @@ class BaseEditor:
                     "post": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, icl_examples_cross,icl_examples_gene,
                                                      icl_examples_loca, icl_examples_port, request, self.hparams.device, source_lang=lang2),
                 })
-
-            else:
-                prepare_request = request.copy()
-                prepare_request["target_new"] = prepare_request["target_new_%s"%source_lang]
-
-                edited_model, weights_copy = self.apply_algo(
-                    self.model,
-                    self.tok,
-                    [prepare_request],
-                    self.hparams,
-                    copy=False,
-                    return_orig_weights=True,
-                    keep_original_weight=keep_original_weight,
-                    train_ds=kwargs['train_ds'] if self.alg_name == 'IKE' else None
-                )
-                exec_time = time() - start
-
-                start = time()
-                all_metrics[i].update({
-                    'case_id': i,
-                    "requested_rewrite": request,
-                    "time": exec_time,
-                    "post": compute_edit_quality(edited_model, self.model_name, self.hparams, self.tok, request, self.hparams.device),
-                })
-                if self.alg_name == 'KN':
-                    with torch.no_grad():
-                        weights_copy() # unpatch_fn
-                else:
-                    with torch.no_grad():
-                        for k, v in weights_copy.items():
-                            nethook.get_parameter(self.model, k)[...] = v.to(f"cuda:{self.hparams.device}")
-                if 'locality' in all_metrics[i]['post'].keys():
-                    for locality_key in request['locality'].keys():
-                        assert len(all_metrics[i]['post']['locality'][f'{locality_key}_output']) == \
-                               len(all_metrics[i]['pre']['locality'][f'{locality_key}_output'])
-                        all_metrics[i]['post']['locality'][f'{locality_key}_acc'] = \
-                            np.mean(np.equal(all_metrics[i]['post']['locality'][f'{locality_key}_output'],
-                                             all_metrics[i]['pre']['locality'][f'{locality_key}_output']))
-                        all_metrics[i]['post']['locality'].pop(f'{locality_key}_output')
-                    all_metrics[i]['pre'].pop('locality')
-
 
         return all_metrics, edited_model, weights_copy
 
@@ -689,6 +631,15 @@ class BaseEditor:
                             }
                         }
                     )
+                elif search == "ikeor":
+                    request['cross'].update(
+                        {
+                            key: {
+                                f'prompt': cross_inputs[key]['prompt'][i],
+                                f'ground_truth': cross_inputs[key]['ground_truth'][i],
+                            }
+                        }
+                    )
                 else:
                     search_prompt, search_truth,flag = self.search_memory(search, i,cross_inputs[key]['prompt'][i],cross_inputs[key]['ground_truth'][i],lang1)
                     request['cross'].update(
@@ -715,6 +666,15 @@ class BaseEditor:
                                 f'ground_truth': generalization_inputs[key]['ground_truth'][i],
                                 f'search_prompt': edited_inputs['edited_english']['prompt'][i],
                                 f'search_truth': edited_inputs['edited_english']['ground_truth'][i]
+                            }
+                        }
+                    )
+                elif search == "ikeor":
+                    request['generalization'].update(
+                        {
+                            key: {
+                                f'prompt': generalization_inputs[key]['prompt'][i],
+                                f'ground_truth': generalization_inputs[key]['ground_truth'][i],
                             }
                         }
                     )
@@ -747,6 +707,15 @@ class BaseEditor:
                             }
                         }
                     )
+                elif search == "ikeor":
+                    request['locality'].update(
+                        {
+                            key: {
+                                f'prompt': locality_inputs[key]['prompt'][i],
+                                f'ground_truth': locality_inputs[key]['ground_truth'][i],
+                            }
+                        }
+                    )
                 else:
                     search_prompt, search_truth, flag = self.search_memory(search, i,locality_inputs[key]['prompt'][i],locality_inputs[key]['ground_truth'][i],lang1)
                     request['locality'].update(
@@ -773,6 +742,15 @@ class BaseEditor:
                                 f'ground_truth': portability_inputs[key]['ground_truth'][i],
                                 f'search_prompt': edited_inputs['edited_english']['prompt'][i],
                                 f'search_truth': edited_inputs['edited_english']['ground_truth'][i]
+                            }
+                        }
+                    )
+                elif search == "ikeor":
+                    request['portability'].update(
+                        {
+                            key: {
+                                f'prompt': portability_inputs[key]['prompt'][i],
+                                f'ground_truth': portability_inputs[key]['ground_truth'][i],
                             }
                         }
                     )

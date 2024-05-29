@@ -110,12 +110,8 @@ if __name__ == "__main__":
 
                 with open(os.path.join("./data/MCounterFact/",f"mcounterfact_test_{lang1}{lang2}.json"), "r", encoding="utf-8") as f:
                     test_data = json.load(f)
-                # with open(os.path.join("./data/",f"zsre_mend_train_{lang2}_10000.txt"), "r", encoding="utf-8") as g:
-                #     training_data_lang2 = g.readlines()
 
-                for test_data_ in range(len(training_data_lang1)):
-                    item = test_data_[lang1]['src']
-                    item_mt = training_data_lang1[i]
+                for test_data_ in test_data:
                     tt = dict()
                     tt["prompt"] = test_data_[lang1]['src']
                     tt["target_new"] = test_data_[lang1]['alt']
@@ -123,17 +119,14 @@ if __name__ == "__main__":
                     tt["prompt_mt"] = test_data_[lang2]['src']
                     tt["target_new_mt"] = test_data_[lang2]['alt']
         
-        
                     train_ds.append(tt)
                     del tt
                     
                     
                 if args.editing_method == 'IKE':
                     device = torch.device(f'cuda:{hparams.device}')
-                    print(args.zeroshot)
-                    if not args.zeroshot: 
-                        print("1111")
-                        encode_ike_facts(sentence_model, train_ds, hparams,lang1)
+                    print("1111")
+                    encode_ike_facts(sentence_model, train_ds, hparams,lang1)
                     print("2222")
 
                     metrics, edited_model, _ = editor.edit_ike(
@@ -145,9 +138,8 @@ if __name__ == "__main__":
                         keep_original_weight=True,
                         lang1=lang1,
                         lang2=lang2,
-                        search=args.search,
+                        search="ikeor",
                         subject=subject,
-                        zeroshot=args.zeroshot,
                         train_ds=train_ds
                     )
         

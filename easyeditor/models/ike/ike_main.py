@@ -83,22 +83,17 @@ def apply_ike_to_model_orig(
         stored_mt = stored_data['mt']
     stored_embeddings = torch.tensor(stored_embeddings).to(device)
     stored_embeddings = util.normalize_embeddings(stored_embeddings)
-    if request['search_prompt'] != "":
 
-        new_fact = request['search_prompt']
+    query_sentence = request['prompt']
 
-        query_sentence = new_fact
+    query_embedding = util.normalize_embeddings(torch.tensor(sentence_model.encode(
+        query_sentence, show_progress_bar=False)).unsqueeze(0).to(device))
 
-        query_embedding = util.normalize_embeddings(torch.tensor(sentence_model.encode(
-            query_sentence, show_progress_bar=False)).unsqueeze(0).to(device))
+    hits = util.semantic_search(query_embedding, stored_embeddings, score_function=util.dot_score, top_k=hparams.k)
+    assert len(hits) == 1
+    hit = hits[0]
 
-        hits = util.semantic_search(query_embedding, stored_embeddings, score_function=util.dot_score, top_k=hparams.k)
-        assert len(hits) == 1
-        hit = hits[0]
-
-        icl_examples = [stored_mt[hit[k]["corpus_id"]] for k in range(len(hit))]
-    else:
-        icl_examples = ['']
+    icl_examples = [stored_mt[hit[k]["corpus_id"]] for k in range(len(hit))]
 
 
     return icl_examples

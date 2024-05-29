@@ -5,7 +5,7 @@ from ..models.mend import MENDHyperParams, MendRewriteExecutor
 from ..models.ft import FTHyperParams, apply_ft_to_model
 from ..models.serac import SERACHparams, SeracRewriteExecutor
 from ..dataset import ZsreDataset, CounterFactDataset
-from ..models.ike import IKEHyperParams, apply_ike_to_model
+from ..models.ike import IKEHyperParams, apply_ike_to_model,apply_ike_to_model_orig
 
 
 ALG_DICT = {
