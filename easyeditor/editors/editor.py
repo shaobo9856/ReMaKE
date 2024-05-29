@@ -326,7 +326,7 @@ class BaseEditor:
 
         all_metrics = []
         for i, request in tqdm(enumerate(requests)):
-            if self.alg_name == 'IKE':
+            if self.alg_name == 'IKEorig':
                 assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
                 metrics = {
                     "pre": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, [''],[''],[''],[''],
@@ -346,7 +346,7 @@ class BaseEditor:
         for i, request in tqdm(enumerate(requests)):
             start = time()
 
-            if self.alg_name == 'IKE':
+            if self.alg_name == 'IKEorig':
                 prepare_request = request.copy()
 
                 assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')

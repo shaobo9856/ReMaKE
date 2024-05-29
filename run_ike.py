@@ -44,7 +44,7 @@ if __name__ == "__main__":
     print("！！！！！！！！！！！model_name！！！！！！！！",hparams.model_name)
     print("！！！！！！！！！！！K！！！！！！！！",hparams.k)
     
-    langs = ['en','cz','de','du','es','fr','pt','ru','th','tr','vi','zh', 'af']
+    langs = ['en','cz','de','du','es','fr','pt','ru','th','tr','vi','zh','af']
     for i in range(len(langs)):
         lang1 = langs[i]
         for j in range(len(langs)):
