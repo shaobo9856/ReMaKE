@@ -282,7 +282,158 @@ class BaseEditor:
 
         return all_metrics, edited_model, weights_copy
     
+    def edit_ike(self,
+             edited_inputs:  Optional[Dict] = None,
+             cross_inputs:  Optional[Dict] = None,
+             generalization_inputs:  Optional[Dict] = None,
+             locality_inputs:  Optional[Dict] = None,
+             portability_inputs:  Optional[Dict] = None,
+             keep_original_weight=True,  # 设置为True的时候代表不是序列式地edit，设置为False的时候代表序列式地edit，每次edit完都会改变参数
+             lang1="cz",
+             lang2="de",
+             search="",
+             subject=[],
+             zeroshot=False,
+             **kwargs
+             ):
+        """
+        `prompts`: list or str
+            the prompts to edit
+        `ground_truth`: str
+            the ground truth / expected output
+        `locality_inputs`: dict
+            for locality
+        """
+        # assert source_lang in ["en", "zh"], "source language should in en or zh"
 
+        if hasattr(self.hparams, 'batch_size'):  # For Singleton Editing, bs=1
+            self.hparams.batch_size = 1
+
+
+        requests = self._prepare_requests(
+            edited_inputs,
+            cross_inputs,
+            generalization_inputs,
+            locality_inputs,
+            portability_inputs,
+            keep_original_weight,  # 设置为True的时候代表不是序列式地edit，设置为False的时候代表序列式地edit，每次edit完都会改变参数
+            lang1,
+            lang2,
+            search,
+            subject,
+            **kwargs)
+
+
+
+        all_metrics = []
+        for i, request in tqdm(enumerate(requests)):
+            if self.alg_name == 'IKE':
+                assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
+                metrics = {
+                    "pre": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, [''],[''],[''],[''],
+                                                     request, self.hparams.device, pre_edit=True, source_lang=lang2)
+                }
+                # metrics = {
+                #     "pre": {}
+                # }    
+            else:
+                metrics = {
+                    "pre": compute_edit_quality(self.model, self.model_name, self.hparams, self.tok, request,
+                                            self.hparams.device)
+                }
+            all_metrics.append(metrics)
+
+
+        for i, request in tqdm(enumerate(requests)):
+            start = time()
+
+            if self.alg_name == 'IKE':
+                prepare_request = request.copy()
+
+                assert 'train_ds' in kwargs.keys() or print('IKE need train_ds(For getting In-Context prompt)')
+                edited_model, weights_copy = self.model, {}
+                print(f"zeroshot:{zeroshot}")
+                if zeroshot:
+                    print("3333")
+                    icl_examples_cross = ['']
+                    icl_examples_gene = ['']
+                    icl_examples_loca = ['']
+                    icl_examples_port = ['']
+                else:
+                    print("4444")
+                    icl_examples_cross = self.apply_algo(self.model,self.tok,
+                                                            {'search_prompt': prepare_request['cross']['cross']['search_prompt'],
+                                                            'search_truth': prepare_request['cross']['cross']['search_truth'],
+                                                            'prompt': prepare_request['cross']['cross']['prompt']},
+                                                            self.hparams,copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_gene = self.apply_algo(self.model, self.tok,
+                                                            {'search_prompt': prepare_request['generalization']['rephrase']['search_prompt'],
+                                                            'search_truth': prepare_request['generalization']['rephrase']['search_truth'],
+                                                            'prompt': prepare_request['generalization']['rephrase']['prompt']},
+                                                            self.hparams, copy=False,return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_loca = self.apply_algo(self.model, self.tok,
+                                                            {'search_prompt': prepare_request['locality']['neighborhood']['search_prompt'],
+                                                            'search_truth': prepare_request['locality']['neighborhood']['search_truth'],
+                                                            'prompt': prepare_request['locality']['neighborhood']['prompt']},
+                                                            self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                    icl_examples_port = self.apply_algo(self.model, self.tok,
+                                                            {'search_prompt': prepare_request['portability']['one_hop']['search_prompt'],
+                                                            'search_truth': prepare_request['portability']['one_hop']['search_truth'],
+                                                            'prompt': prepare_request['portability']['one_hop']['prompt']},
+                                                            self.hparams, copy=False, return_orig_weights=True,keep_original_weight=keep_original_weight,train_ds=kwargs['train_ds'],lang=lang1)
+                print(f"icl_examples_cross: {icl_examples_cross}")
+                exec_time = time() - start
+                start = time()
+                all_metrics[i].update({
+                    'case_id': i,
+                    "requested_rewrite": request,
+                    "time": exec_time,
+                    "post": compute_icl_edit_quality(self.model, self.model_name, self.hparams, self.tok, icl_examples_cross,icl_examples_gene,
+                                                     icl_examples_loca, icl_examples_port, request, self.hparams.device, source_lang=lang2),
+                })
+
+            else:
+                prepare_request = request.copy()
+                prepare_request["target_new"] = prepare_request["target_new_%s"%source_lang]
+
+                edited_model, weights_copy = self.apply_algo(
+                    self.model,
+                    self.tok,
+                    [prepare_request],
+                    self.hparams,
+                    copy=False,
+                    return_orig_weights=True,
+                    keep_original_weight=keep_original_weight,
+                    train_ds=kwargs['train_ds'] if self.alg_name == 'IKE' else None
+                )
+                exec_time = time() - start
+
+                start = time()
+                all_metrics[i].update({
+                    'case_id': i,
+                    "requested_rewrite": request,
+                    "time": exec_time,
+                    "post": compute_edit_quality(edited_model, self.model_name, self.hparams, self.tok, request, self.hparams.device),
+                })
+                if self.alg_name == 'KN':
+                    with torch.no_grad():
+                        weights_copy() # unpatch_fn
+                else:
+                    with torch.no_grad():
+                        for k, v in weights_copy.items():
+                            nethook.get_parameter(self.model, k)[...] = v.to(f"cuda:{self.hparams.device}")
+                if 'locality' in all_metrics[i]['post'].keys():
+                    for locality_key in request['locality'].keys():
+                        assert len(all_metrics[i]['post']['locality'][f'{locality_key}_output']) == \
+                               len(all_metrics[i]['pre']['locality'][f'{locality_key}_output'])
+                        all_metrics[i]['post']['locality'][f'{locality_key}_acc'] = \
+                            np.mean(np.equal(all_metrics[i]['post']['locality'][f'{locality_key}_output'],
+                                             all_metrics[i]['pre']['locality'][f'{locality_key}_output']))
+                        all_metrics[i]['post']['locality'].pop(f'{locality_key}_output')
+                    all_metrics[i]['pre'].pop('locality')
+
+
+        return all_metrics, edited_model, weights_copy
 
     def batch_edit(self,
                    prompts: List[str],
@@ -453,6 +604,39 @@ class BaseEditor:
             else:
                 m_q, m_a = "", ""
             return m_q, m_a, flag
+        
+    # def search_memory(self, search, index, question, answer, lang, k=1):
+    #     if search == 'classifier':
+    #         num = index
+    #         text = [en + self.xlmr_tokenizer.sep_token + question for en in self.memory[lang]['memory_ques']]
+    #         input_ids = self.xlmr_tokenizer(text, return_tensors='pt', padding=True).to('cuda')
+    #         output = self.xlmr_model(**input_ids)
+    #         # Get the top k values and indices
+    #         topk_vals, topk_indices = torch.topk(output.logits.log_softmax(-1), k, dim=1)
+            
+    #         # Initialize lists to store top k matches
+    #         topk_m_qs = []
+    #         topk_m_as = []
+    #         flags = [0] * k
+
+    #         # Iterate over the top k indices and values
+    #         for i in range(k):
+    #             idx = topk_indices[:, i]
+    #             val = topk_vals[:, i]
+    #             if 0 in idx:
+    #                 indices = np.where(idx.detach().cpu().numpy() == 0)[0]
+    #                 max_index = indices[np.argmax(val.detach().cpu().numpy()[indices])]
+    #                 m_q, m_a = self.memory[lang]['memory_ques'][max_index], self.memory[lang]['memory_ans'][max_index]
+    #                 topk_m_qs.append(m_q)
+    #                 topk_m_as.append(m_a)
+    #                 if max_index == index:
+    #                     flags[i] = 1
+    #             else:
+    #                 topk_m_qs.append("")
+    #                 topk_m_as.append("")
+            
+    #         return topk_m_qs, topk_m_as, flags
+
 
     def _prepare_requests(self,
                           edited_inputs: Optional[Dict] = None,

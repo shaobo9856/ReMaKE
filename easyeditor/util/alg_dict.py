@@ -16,6 +16,7 @@ ALG_DICT = {
     'MEND': MendRewriteExecutor().apply_to_model,
     'SERAC': SeracRewriteExecutor().apply_to_model,
     'IKE': apply_ike_to_model,
+    'IKEorig': apply_ike_to_model_orig,
 }
 
 DS_DICT = {
