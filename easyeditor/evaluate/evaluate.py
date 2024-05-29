@@ -43,7 +43,9 @@ def compute_icl_edit_quality(
     :return: Dictionary containing rewriting metrics
     """
 
-    search_prompt, search_truth = record['cross']['cross']['search_prompt'], record['cross']['cross']['search_truth']
+    # search_prompt, search_truth = record['cross']['cross']['search_prompt'], record['cross']['cross']['search_truth']
+    search_prompt = record.get('cross', {}).get('cross', {}).get('search_prompt', "")
+    search_truth = record.get('cross', {}).get('cross', {}).get('search_truth', "")
     cross_prompt, cross_truth = record['cross']['cross']['prompt'], record['cross']['cross']['ground_truth']
 
     if pre_edit:
