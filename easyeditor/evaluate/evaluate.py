@@ -73,7 +73,9 @@ def compute_icl_edit_quality(
     ret['portability'] = {}
 
     for key in record['generalization'].keys():
-        search_prompt, search_truth = record['generalization'][key]['search_prompt'], record['generalization'][key]['search_truth']
+        # search_prompt, search_truth = record['generalization'][key]['search_prompt'], record['generalization'][key]['search_truth']
+        search_prompt = record.get('generalization', {}).get(key, {}).get('search_prompt', "")
+        search_truth = record.get('generalization', {}).get(key, {}).get('search_truth', "")
         if pre_edit:
             gene_ans, gene_target = icl_lm_eval(model, model_name, hparams, tok, [''],record['generalization'][key]['ground_truth'],f"Question: {record['generalization'][key]['prompt']} Answer:")
         else:
@@ -94,7 +96,9 @@ def compute_icl_edit_quality(
 
 
     for key in record['locality'].keys():
-        search_prompt, search_truth = record['locality'][key]['search_prompt'], record['locality'][key]['search_truth']
+        # search_prompt, search_truth = record['locality'][key]['search_prompt'], record['locality'][key]['search_truth']
+        search_prompt = record.get('locality', {}).get(key, {}).get('search_prompt', "")
+        search_truth = record.get('locality', {}).get(key, {}).get('search_truth', "")
         if pre_edit:
             loca_ans, loca_target = icl_lm_eval(model, model_name, hparams, tok, [''],record['locality'][key]['ground_truth'],f"Question: {record['locality'][key]['prompt']} Answer:")
         else:
@@ -114,7 +118,9 @@ def compute_icl_edit_quality(
         }
 
         for key in record['portability'].keys():
-            search_prompt, search_truth = record['portability'][key]['search_prompt'], record['portability'][key]['search_truth']
+            # search_prompt, search_truth = record['portability'][key]['search_prompt'], record['portability'][key]['search_truth']
+            search_prompt = record.get('portability', {}).get(key, {}).get('search_prompt', "")
+            search_truth = record.get('portability', {}).get(key, {}).get('search_truth', "")
             if pre_edit:
                 gene_ans, gene_target = icl_lm_eval(model, model_name, hparams, tok, [''],record['portability'][key]['ground_truth'],
                                                     f"Question: {record['portability'][key]['prompt']} Answer:")
